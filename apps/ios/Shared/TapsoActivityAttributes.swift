@@ -32,16 +32,19 @@ public struct TapsoActivityAttributes: ActivityAttributes, Sendable {
     public let routeID: String
     public let boardingStopName: String
     public let destinationName: String
+    public let totalStops: Int
 
     public init(
         routeNumber: String,
         routeID: String,
         boardingStopName: String,
-        destinationName: String
+        destinationName: String,
+        totalStops: Int
     ) {
         self.routeNumber = routeNumber
         self.routeID = routeID
         self.boardingStopName = boardingStopName
         self.destinationName = destinationName
+        self.totalStops = totalStops
     }
 }

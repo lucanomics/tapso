@@ -54,14 +54,27 @@ struct ActiveJourneyView: View {
     }
 
     private var remainingPanel: some View {
-        VStack(spacing: 6) {
-            Text(phaseEyebrow)
-                .font(.caption.weight(.bold))
-                .tracking(1.2)
+        VStack(spacing: 10) {
+            Label(phaseEyebrow, systemImage: phaseSymbol)
+                .font(.caption.weight(.black))
+                .tracking(0.8)
                 .foregroundStyle(phaseColor)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(phaseColor.opacity(0.12), in: Capsule())
+                .overlay {
+                    Capsule().stroke(phaseColor.opacity(0.24), lineWidth: 0.75)
+                }
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(model.remainingStops, format: .number)
                     .font(.system(size: 86, weight: .black, design: .rounded))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [phaseColor, phaseColor.opacity(0.72)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .contentTransition(.numericText())
                 Text("stops_unit")
                     .font(.title3.weight(.bold))
@@ -73,7 +86,21 @@ struct ActiveJourneyView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 28)
-        .background(theme.surface, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .background {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [phaseColor.opacity(0.16), theme.surface, theme.surface],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .stroke(phaseColor.opacity(0.2), lineWidth: 1)
+                }
+        }
+        .shadow(color: phaseColor.opacity(0.12), radius: 18, y: 9)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
             String(
@@ -187,6 +214,16 @@ struct ActiveJourneyView: View {
         case .arrived: String(localized: "get_off_now")
         case .dataAging, .dataStale: String(localized: "check_vehicle_display")
         default: String(localized: "keep_enjoying_ride")
+        }
+    }
+
+    private var phaseSymbol: String {
+        switch model.currentState {
+        case .approachingDestination: "figure.stand"
+        case .nextStopIsDestination: "bell.fill"
+        case .arrived: "figure.walk"
+        case .dataAging, .dataStale: "exclamationmark.triangle.fill"
+        default: "bus.fill"
         }
     }
 

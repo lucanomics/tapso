@@ -3,7 +3,7 @@
 "demo_badge" = "DEMO";
 "eight_stops" = "8 stops";
 "vehicle_data" = "Vehicle data";
-"demo_explanation" = "This deterministic ride uses the real matching, progress, journey, and Live Activity code paths without a government API key.";
+"demo_explanation" = "TAPSO follows the bus from public data, then keeps remaining stops and the get-off moment visible in Dynamic Island after you close the app.";
 "demo_route_accessibility" = "Demo route 365 from Jeju Bus Terminal to Jeju Immigration Office, eight stops.";
 "start_demo_ride" = "Start demo ride";
 "active_journey_title" = "Your ride";
@@ -38,3 +38,16 @@
 "destination" = "Destination";
 "live_activity_accessibility" = "Route %@ to %@. %ld stops remaining.";
 "live" = "LIVE";
+"compact_stops" = "stops";
+"compact_prepare" = "ready";
+"compact_next" = "next exit";
+"compact_get_off" = "get off";
+"compact_delayed" = "delayed";
+"tracking_live" = "tracking bus";
+"island_tracking_message" = "Tracking your bus to the destination.";
+"alert_prepare_title" = "Two stops remaining";
+"alert_prepare_body" = "Start getting ready to get off.";
+"alert_next_title" = "Get off at the next stop";
+"alert_next_body" = "Your destination is the next stop.";
+"alert_arrived_title" = "Destination reached";
+"alert_arrived_body" = "Get off the bus now.";

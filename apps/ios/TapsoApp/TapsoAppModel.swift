@@ -98,10 +98,11 @@ final class TapsoAppModel {
             routeNumber: route.number,
             routeID: route.id.rawValue,
             boardingStopName: route.stops[0].stop.name,
-            destinationName: destinationName
+            destinationName: destinationName,
+            totalStops: max(1, route.stops.count - 1)
         )
         do {
-            try liveActivity.start(attributes: attributes, state: contentState())
+            try await liveActivity.start(attributes: attributes, state: contentState())
             session?.attachLiveActivity(id: liveActivity.activityID)
         } catch {
             errorMessage = error.localizedDescription
@@ -123,9 +124,10 @@ final class TapsoAppModel {
     func finishRide() async {
         playbackTask?.cancel()
         guard var current = session else { return }
+        let finalState = contentState()
         current.complete()
         session = current
-        await liveActivity.end(state: contentState())
+        await liveActivity.end(state: finalState)
         session = nil
         matchResult = nil
         timelineIndex = 0

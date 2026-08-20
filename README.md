@@ -11,7 +11,7 @@ This repository contains a production-shaped first vertical slice. Its determini
 | Swift transit core | `VERIFIED` | 38 Swift tests cover matching, progress, freshness, journey transitions, and debug evidence |
 | Native iOS app | `VERIFIED` | Xcode simulator build includes the app and WidgetKit extension |
 | Local 8 → 0 demo | `IMPLEMENTED` | 1×, 5×, 10×, and manual stepping use production domain types |
-| Lock Screen / Dynamic Island | `IMPLEMENTED` | ActivityKit request, update, and end paths plus every island region |
+| Lock Screen / Dynamic Island | `VERIFIED` | iOS 26.3 iPhone 17 Pro Simulator: compact 8/2/1/0, expanded, Lock Screen, request/update/end; 4 iOS tests |
 | TypeScript API scaffold | `VERIFIED` | Native Node tests cover matching and official-schema normalization |
 | Official API contract | `VERIFIED` | Swagger paths and fields inspected from data.go.kr resource 15157601 |
 | Live Jeju response quality | `BLOCKED_BY_CREDENTIALS` | No public-data service key was available; no live response is claimed |
@@ -30,7 +30,7 @@ xcodebuild -project apps/ios/Tapso.xcodeproj -scheme Tapso \
   -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
-Open `apps/ios/Tapso.xcodeproj`, run the `Tapso` scheme, then choose **Start demo ride**. The demo begins at eight stops remaining and supports accelerated or manual progression.
+Open `apps/ios/Tapso.xcodeproj`, run the `Tapso` scheme, then choose **Start demo ride** and allow Live Activities when iOS asks. The demo begins at eight stops remaining and supports accelerated or manual progression. Press Home to inspect compact mode and touch and hold the Island for the expanded journey surface.
 
 To probe live official data, copy `.env.example` to `.env`, provide the decoded service key only in your local environment, and run:
 

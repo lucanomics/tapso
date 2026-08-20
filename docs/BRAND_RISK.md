@@ -1,6 +1,6 @@
 # Brand risk
 
-TAPSO has an independent name, mint/ink/mist palette, typographic treatment, copy, and layout. Reference-product research is limited to public product capabilities and user problems. No source code, icon, screenshot, illustration, proprietary data, or distinctive composition is copied.
+TAPSO has an independent name, mint/ink/mist palette with amber/coral milestone accents, typographic treatment, copy, and layout. 지하섬 reference research is limited to its public App Store capabilities, screenshots, and user problems: always-visible remaining stops, a strong pre-arrival warning, and low setup burden. TAPSO does not reuse its source code, brand, icon, screenshot, illustration, proprietary data, or distinctive composition.
 
 Before public release:
 
