@@ -1,0 +1,12 @@
+# Privacy and security
+
+TAPSO's default architecture tracks a public transit vehicle, not continuous passenger location. A future one-shot boarding location may be optional and must work only with explicit permission; it is not required by the current core.
+
+- Government and APNs keys remain server-side and are excluded by `.gitignore`.
+- The demo collects no user data and makes no network request.
+- The API uses an eight-second upstream timeout and structured errors.
+- Ride sessions should use random opaque IDs, short retention, and the minimum route/stop/token data needed to update an activity.
+- Activity push tokens are sensitive routing material: encrypt at rest, never log them in full, rotate with ActivityKit, and delete after session end.
+- Do not store passenger GPS histories, contact data, or identity unless a later feature has a specific lawful need and consent design.
+
+Authentication is intentionally absent from the scaffold. Add it only when persistent user-specific data creates an actual boundary.

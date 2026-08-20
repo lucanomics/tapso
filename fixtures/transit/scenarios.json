@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "scenarios": [
+    { "id": "normal-8-to-0", "expected": "progresses monotonically from 8 remaining stops to arrived" },
+    { "id": "two-same-route", "expected": "select only with a sufficient evidence margin" },
+    { "id": "opposite-direction", "expected": "reject candidate" },
+    { "id": "stale", "expected": "withhold match and mark data stale" },
+    { "id": "missing-poll", "expected": "retain last state within grace window" },
+    { "id": "duplicate-poll", "expected": "ignore duplicate timestamp and position" },
+    { "id": "vehicle-disappears", "expected": "move to degraded and end after timeout" },
+    { "id": "approach-reached-passed", "expected": "emit 2, 1, 0, then passed" },
+    { "id": "route-variant", "expected": "reject incompatible stop ordering" }
+  ]
+}

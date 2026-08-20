@@ -1,0 +1,84 @@
+name: Tapso
+options:
+  bundleIdPrefix: app.tapso
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+packages:
+  TapsoTransit:
+    path: ../../packages/transit-core
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "0.1.0"
+targets:
+  Tapso:
+    type: application
+    platform: iOS
+    sources:
+      - path: TapsoApp
+      - path: Shared
+      - path: Resources
+        buildPhase: resources
+    info:
+      path: TapsoApp/Info.plist
+      properties:
+        CFBundleDisplayName: TAPSO
+        LSRequiresIPhoneOS: true
+        NSSupportsLiveActivities: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.tapso.Tapso
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+    dependencies:
+      - package: TapsoTransit
+      - target: TapsoLiveActivity
+        embed: true
+    scheme:
+      testTargets:
+        - TapsoTests
+      gatherCoverageData: true
+  TapsoLiveActivity:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: LiveActivity
+      - path: Shared
+      - path: Resources
+        buildPhase: resources
+    info:
+      path: LiveActivity/Info.plist
+      properties:
+        CFBundleDisplayName: TAPSO Live Activity
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.tapso.Tapso.LiveActivity
+        PRODUCT_NAME: TapsoLiveActivity
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - package: TapsoTransit
+  TapsoTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.tapso.TapsoTests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: Tapso
+      - package: TapsoTransit

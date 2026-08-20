@@ -1,0 +1,14 @@
+# TAPSO ExecPlans
+
+An ExecPlan is a living implementation document for work spanning multiple modules or verification loops. Store it in `docs/exec-plans/` and include:
+
+1. User-visible outcome and non-goals.
+2. Verified constraints and assumptions with reality labels.
+3. Milestones with observable completion criteria.
+4. Decisions and alternatives considered.
+5. Reproduction commands and evidence.
+6. Progress, unexpected findings, risks, and exact next action.
+
+Update the plan during implementation. A future contributor must be able to resume from repository evidence alone. Never mark credentialed or device-only work complete without proof.
+
+Current plan: `docs/exec-plans/INITIAL_BUILD.md`.
