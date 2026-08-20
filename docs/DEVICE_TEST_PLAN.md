@@ -26,4 +26,4 @@
 - Dynamic Island regions do not truncate the critical number/destination at supported text sizes.
 - APNs and local updates are idempotent; stale data is visible within the configured threshold.
 
-Current result: iOS 26.3 iPhone 17 Pro Simulator verifies the app build, 4 iOS tests, compact states at 8/2/1/0, expanded Island, and Lock Screen card. Important-update sound/banner behavior and the rest of the physical-device matrix remain `UNVERIFIED` until a signed real-device run.
+Current result: iOS 26.3 iPhone 17 Pro Simulator verifies the app build, 8 iOS tests, compact states at 8/2/1/0, expanded Island, and Lock Screen card. Important-update sound/banner behavior and the rest of the physical-device matrix remain `UNVERIFIED` until a signed real-device run.
