@@ -21,6 +21,10 @@ General map navigation, accounts, payments, tourism content, Android, production
 - [x] Research 지하섬's public App Store experience and current primary-source ActivityKit behavior.
 - [x] Implement and visually verify state-adaptive compact, minimal, expanded, and Lock Screen surfaces at 8/2/1/0 stops.
 - [x] Add stale/relevance policy, one-shot important alerts, duplicate-activity cleanup, and relaunch reattachment.
+- [x] Fail closed on inconsistent phase/count/freshness signals, add deterministic suppression tests, and surface a distinct checking state.
+- [x] Refine app and Island proportions with compact route badges, scaled rounded numerals, friendly squircle glyphs, and a connectivity/match-confidence trust strip.
+- [x] Add an original Jeju visual layer to every Island size: a state-reactive basalt buddy, tangerine route/destination markers, sea-foam waves, and warm 제주-breeze copy.
+- [x] Make the unexpanded Island a complete glanceable experience with a mini journey gauge, basalt route companion, action-state pills, and a discoverable touch-and-hold accessibility hint.
 - [x] Add TypeScript provider, matching, APNs boundaries, fixtures, and tests.
 - [x] Write product, architecture, evidence, risk, device, and handoff docs.
 - [ ] Validate real Jeju observations (`BLOCKED_BY_CREDENTIALS`).
@@ -43,6 +47,7 @@ General map navigation, accounts, payments, tourism content, Android, production
 - No hosting/database choice before cadence and load evidence.
 - Dynamic Island is the primary in-ride surface. Public reference research informs information hierarchy and milestone escalation only; TAPSO retains independent copy, styling, and composition.
 - Alert configuration is emitted once per 2/1/0 milestone so duplicate observations cannot repeatedly notify the rider.
+- A 2/1/0 alert requires an exact phase/count pair and fresh-enough data. Inconsistent or unknown signals show checking; aging or stale signals show delayed.
 
 ## Unexpected findings
 

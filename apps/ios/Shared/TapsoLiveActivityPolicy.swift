@@ -7,14 +7,58 @@ enum TapsoLiveActivityMilestone: String, Equatable, Sendable {
     case arrived
 }
 
+enum TapsoLiveActivityDisplayPhase: String, Equatable, Sendable {
+    case riding
+    case prepare
+    case nextStop
+    case arrived
+    case delayed
+    case checking
+}
+
 enum TapsoLiveActivityPolicy {
+    static func displayPhase(
+        for state: TapsoActivityAttributes.ContentState
+    ) -> TapsoLiveActivityDisplayPhase {
+        guard state.remainingStops >= 0 else { return .checking }
+
+        if state.phase == .completed || state.phase == .cancelled {
+            return .checking
+        }
+        if state.freshness == .stale
+            || state.phase == .dataStale
+            || state.phase == .vehicleTemporarilyLost {
+            return .delayed
+        }
+        if state.freshness == .unknown
+            || state.phase == .vehicleRecovery {
+            return .checking
+        }
+        if state.freshness == .aging || state.phase == .dataAging {
+            return .delayed
+        }
+
+        switch (state.phase, state.remainingStops) {
+        case (.approachingDestination, 2):
+            return .prepare
+        case (.nextStopIsDestination, 1):
+            return .nextStop
+        case (.arrived, 0):
+            return .arrived
+        case (.active, 3...):
+            return .riding
+        default:
+            return .checking
+        }
+    }
+
     static func milestone(
         for state: TapsoActivityAttributes.ContentState
     ) -> TapsoLiveActivityMilestone? {
-        switch state.phase {
-        case .approachingDestination:
+        switch displayPhase(for: state) {
+        case .prepare:
             .prepare
-        case .nextStopIsDestination:
+        case .nextStop:
             .nextStop
         case .arrived:
             .arrived
@@ -26,14 +70,14 @@ enum TapsoLiveActivityPolicy {
     static func relevanceScore(
         for state: TapsoActivityAttributes.ContentState
     ) -> Double {
-        switch state.phase {
+        switch displayPhase(for: state) {
         case .arrived:
             100
-        case .nextStopIsDestination:
+        case .nextStop:
             95
-        case .approachingDestination:
+        case .prepare:
             85
-        case .dataAging, .dataStale:
+        case .delayed, .checking:
             75
         default:
             50
@@ -43,10 +87,11 @@ enum TapsoLiveActivityPolicy {
     static func staleDate(
         for state: TapsoActivityAttributes.ContentState
     ) -> Date? {
-        switch state.phase {
-        case .arrived, .completed, .cancelled:
+        if state.phase == .completed
+            || state.phase == .cancelled
+            || displayPhase(for: state) == .arrived {
             nil
-        default:
+        } else {
             state.updatedAt.addingTimeInterval(120)
         }
     }
