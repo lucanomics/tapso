@@ -40,6 +40,68 @@ final class TapsoActivityAttributesTests: XCTestCase {
         XCTAssertNil(TapsoLiveActivityPolicy.staleDate(for: arrived))
     }
 
+    func testInconsistentMilestoneFailsClosedWithoutAlert() {
+        let inconsistentNext = makeState(
+            phase: .nextStopIsDestination,
+            remainingStops: 2
+        )
+        let prematureArrival = makeState(
+            phase: .arrived,
+            remainingStops: 1
+        )
+
+        XCTAssertEqual(
+            TapsoLiveActivityPolicy.displayPhase(for: inconsistentNext),
+            .checking
+        )
+        XCTAssertEqual(
+            TapsoLiveActivityPolicy.displayPhase(for: prematureArrival),
+            .checking
+        )
+        XCTAssertNil(TapsoLiveActivityPolicy.milestone(for: inconsistentNext))
+        XCTAssertNil(TapsoLiveActivityPolicy.milestone(for: prematureArrival))
+    }
+
+    func testStaleNextStopSuppressesGetOffAlert() {
+        let staleNext = makeState(
+            phase: .nextStopIsDestination,
+            remainingStops: 1,
+            freshness: .stale
+        )
+
+        XCTAssertEqual(TapsoLiveActivityPolicy.displayPhase(for: staleNext), .delayed)
+        XCTAssertNil(TapsoLiveActivityPolicy.milestone(for: staleNext))
+        XCTAssertGreaterThan(
+            TapsoLiveActivityPolicy.relevanceScore(for: staleNext),
+            TapsoLiveActivityPolicy.relevanceScore(
+                for: makeState(phase: .active, remainingStops: 8)
+            )
+        )
+    }
+
+    func testStaleArrivalSuppressesArrivalAlert() {
+        let staleArrival = makeState(
+            phase: .arrived,
+            remainingStops: 0,
+            freshness: .stale
+        )
+
+        XCTAssertEqual(TapsoLiveActivityPolicy.displayPhase(for: staleArrival), .delayed)
+        XCTAssertNil(TapsoLiveActivityPolicy.milestone(for: staleArrival))
+        XCTAssertNotNil(TapsoLiveActivityPolicy.staleDate(for: staleArrival))
+    }
+
+    func testUnknownFreshnessUsesCheckingPresentation() {
+        let unknown = makeState(
+            phase: .active,
+            remainingStops: 8,
+            freshness: .unknown
+        )
+
+        XCTAssertEqual(TapsoLiveActivityPolicy.displayPhase(for: unknown), .checking)
+        XCTAssertNil(TapsoLiveActivityPolicy.milestone(for: unknown))
+    }
+
     func testCombinedActivityPayloadStaysBelowActivityKitLimit() throws {
         struct Payload: Encodable {
             let attributes: TapsoActivityAttributes
@@ -60,14 +122,15 @@ final class TapsoActivityAttributesTests: XCTestCase {
 
     private func makeState(
         phase: JourneyState,
-        remainingStops: Int
+        remainingStops: Int,
+        freshness: DataFreshness = .fresh
     ) -> TapsoActivityAttributes.ContentState {
         TapsoActivityAttributes.ContentState(
             phase: phase,
             currentStopName: "동문로터리",
             nextStopName: "제주여자상업고등학교",
             remainingStops: remainingStops,
-            freshness: .fresh,
+            freshness: freshness,
             updatedAt: Date(timeIntervalSince1970: 1_800_000_000)
         )
     }

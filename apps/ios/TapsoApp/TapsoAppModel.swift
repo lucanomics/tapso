@@ -43,7 +43,15 @@ final class TapsoAppModel {
     var hasActiveRide: Bool { session != nil }
     var currentProgress: DestinationProgress? { session?.latestProgress }
     var currentState: JourneyState { session?.state ?? .idle }
-    var remainingStops: Int { currentProgress?.remainingStops ?? 8 }
+    var routeNumber: String { route.number }
+    var totalStops: Int { max(1, route.stops.count - 1) }
+    var remainingStops: Int { currentProgress?.remainingStops ?? totalStops }
+    var completedStops: Int { min(totalStops, max(0, totalStops - remainingStops)) }
+    var matchConfidence: MatchConfidence { matchResult?.confidence ?? .unknown }
+    var isLiveActivityRunning: Bool { liveActivity.activityID != nil }
+    var activityDisplayPhase: TapsoLiveActivityDisplayPhase {
+        TapsoLiveActivityPolicy.displayPhase(for: contentState())
+    }
     var currentStopName: String {
         currentProgress?.currentStop.stop.name ?? route.stops[0].stop.name
     }
@@ -173,12 +181,12 @@ final class TapsoAppModel {
     }
 
     private func notifyForMilestone() {
-        switch remainingStops {
-        case 2:
+        switch TapsoLiveActivityPolicy.milestone(for: contentState()) {
+        case .prepare:
             UINotificationFeedbackGenerator().notificationOccurred(.warning)
-        case 1, 0:
+        case .nextStop, .arrived:
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-        default:
+        case nil:
             break
         }
     }
