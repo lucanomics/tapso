@@ -15,9 +15,11 @@
 		47E014F012F2F08A882914D1 /* TapsoActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8C62072A571904D527220A /* TapsoActivityAttributes.swift */; };
 		55C07EC2DA1DBADEE79DDDFF /* TapsoLiveActivity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7A67F62B287BF76427EBBE2E /* TapsoLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		56BD6AD4BCC45377E0CE741D /* TapsoAppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BA005BA10C083AB2853B37 /* TapsoAppModel.swift */; };
+		593B1456AA2D7A490909919B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25F8D8F9725AF79DC9F83B2B /* Assets.xcassets */; };
 		5F66F9600ABB064DB4E497CF /* ActiveJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA9EFD893CE8DF53C859051 /* ActiveJourneyView.swift */; };
 		8DE04E13BF084EE14A7BA069 /* TapsoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E81A105BFAE60A7D6736AC /* TapsoTheme.swift */; };
 		92EE1A4C38FE50BF1064B9C5 /* TapsoLiveActivityBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D60E620C5E250E23C2DF09 /* TapsoLiveActivityBundle.swift */; };
+		9DF797D657D259EB1CC12E82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25F8D8F9725AF79DC9F83B2B /* Assets.xcassets */; };
 		B2EE311E1A81511BB21CF237 /* TapsoActivityAttributesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7108E508389781AD30FB5E4 /* TapsoActivityAttributesTests.swift */; };
 		C2176B27F64CF25CB4B735B1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2436CA0171BFA7890857165A /* Localizable.strings */; };
 		C5476D706116582E39974F11 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4DC107A685A8022F94C559 /* HomeView.swift */; };
@@ -63,6 +65,7 @@
 /* Begin PBXFileReference section */
 		01434169EBED9CD788681A50 /* TapsoLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapsoLiveActivityWidget.swift; sourceTree = "<group>"; };
 		185322C93CB8D33570D783DF /* Tapso.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Tapso.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		25F8D8F9725AF79DC9F83B2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		42D57D80E8DA25430E5E9E55 /* transit-core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "transit-core"; path = "../../packages/transit-core"; sourceTree = SOURCE_ROOT; };
 		55D60E620C5E250E23C2DF09 /* TapsoLiveActivityBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapsoLiveActivityBundle.swift; sourceTree = "<group>"; };
 		56ADD839CF48109E865CAA8C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -122,6 +125,7 @@
 		23C53EF5D72C5A874A2E6E41 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				25F8D8F9725AF79DC9F83B2B /* Assets.xcassets */,
 				2436CA0171BFA7890857165A /* Localizable.strings */,
 			);
 			path = Resources;
@@ -267,15 +271,15 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					066EEA5E4A9F938FC213D627 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = 89CGFQ24U5;
 						ProvisioningStyle = Automatic;
 					};
 					9CFE9F18504DCF17CBC7BB06 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = 89CGFQ24U5;
 						ProvisioningStyle = Automatic;
 					};
 					F1F3285F5689927EC2C69AFA = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = 89CGFQ24U5;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -310,6 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				593B1456AA2D7A490909919B /* Assets.xcassets in Resources */,
 				C2176B27F64CF25CB4B735B1 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -318,6 +323,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DF797D657D259EB1CC12E82 /* Assets.xcassets in Resources */,
 				DD911FC6501FE330D9D8A2BF /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -398,7 +404,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.tapso.Tapso;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucanomics.tapso;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -415,7 +421,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.tapso.TapsoTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucanomics.tapso.Tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tapso.app/Tapso";
@@ -459,7 +465,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 89CGFQ24U5;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -499,7 +505,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.tapso.Tapso;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucanomics.tapso;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -516,7 +522,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.tapso.Tapso.LiveActivity;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucanomics.tapso.LiveActivity;
 				PRODUCT_NAME = TapsoLiveActivity;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -561,7 +567,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 89CGFQ24U5;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -594,7 +600,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.tapso.Tapso.LiveActivity;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucanomics.tapso.LiveActivity;
 				PRODUCT_NAME = TapsoLiveActivity;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -612,7 +618,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.tapso.TapsoTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucanomics.tapso.Tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tapso.app/Tapso";

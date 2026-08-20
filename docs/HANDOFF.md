@@ -27,7 +27,8 @@ If the repository is in an iCloud/FileProvider location, choose **Keep Downloade
 4. Add route setup and ambiguity confirmation UI before calling the client MVP complete.
 5. Provision Apple credentials and replace the APNs scaffold.
 6. Execute `DEVICE_TEST_PLAN.md` on signed hardware.
+7. Follow `TESTFLIGHT.md` for the deterministic internal-beta release path and its explicit reality boundary.
 
 ## Repository hygiene
 
-No commit or remote operation was performed because the user did not explicitly authorize staging/committing/pushing. Secrets must remain outside Git. Keep the checked-in `.xcodeproj` synchronized with `project.yml`.
+Secrets must remain outside Git. Keep the checked-in `.xcodeproj` synchronized with `project.yml`, and increment the build number before every App Store Connect upload.

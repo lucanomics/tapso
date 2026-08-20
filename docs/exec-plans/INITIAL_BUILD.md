@@ -5,7 +5,7 @@ Started: 2026-08-20 (Asia/Seoul)
 
 ## Objective
 
-Build and verify the smallest end-to-end native TAPSO architecture: conservative physical-vehicle matching, stop progress, journey state, a Dynamic-Island-first 8 → 0 ActivityKit demo, and a server-side official provider boundary.
+Build and verify the smallest end-to-end native TAPSO architecture: conservative physical-vehicle matching, stop progress, journey state, a Dynamic-Island-first 8 → 0 ActivityKit demo, a server-side official provider boundary, and a distributable internal TestFlight demo.
 
 ## Non-goals
 
@@ -27,6 +27,9 @@ General map navigation, accounts, payments, tourism content, Android, production
 - [x] Make the unexpanded Island a complete glanceable experience with a mini journey gauge, basalt route companion, action-state pills, and a discoverable touch-and-hold accessibility hint.
 - [x] Add TypeScript provider, matching, APNs boundaries, fixtures, and tests.
 - [x] Write product, architecture, evidence, risk, device, and handoff docs.
+- [x] Add the final app icon, coherent release versioning, and distribution metadata.
+- [ ] Produce and validate a signed App Store archive.
+- [ ] Upload the processed build and distribute it to an internal TestFlight group.
 - [ ] Validate real Jeju observations (`BLOCKED_BY_CREDENTIALS`).
 - [ ] Validate remote ActivityKit pushes and physical devices (`BLOCKED_BY_CREDENTIALS`).
 
@@ -35,8 +38,10 @@ General map navigation, accounts, payments, tourism content, Android, production
 - Xcode 26.3, Swift 6.2.4, Node 24.14, and iOS simulators are present.
 - Official resource 15157601 describes nationwide route, ordered-stop, and realtime vehicle-location data; authenticated Jeju behavior is still unknown.
 - ActivityKit is available from iOS 16.1; this project chooses iOS 17 for a stable modern baseline.
-- iOS 26.3 iPhone 17 Pro Simulator renders the compact 8/2/1/0 states, expanded Island, and Lock Screen card. Four iOS tests pass, including relevance/staleness and the 4 KB payload guard.
+- iOS 26.3 iPhone 17 Pro Simulator renders the compact 8/2/1/0 states, expanded Island, and Lock Screen card. Eight iOS tests pass, including fail-closed phase/freshness behavior and the 4 KB payload guard.
 - The workspace is FileProvider-managed, so sources must remain downloaded and signing output must use an unsynced DerivedData directory.
+- An unsigned generic-device Release archive succeeds and embeds the Live Activity extension. App Store signing and upload remain unverified until Apple account access is established.
+- The TestFlight-ready archive compiles as version `0.1.0 (1)`, contains the 1024×1024 AppIcon rendition, uses `com.lucanomics.tapso`, and embeds `com.lucanomics.tapso.LiveActivity`.
 
 ## Decisions
 
@@ -53,6 +58,8 @@ General map navigation, accounts, payments, tourism content, Android, production
 
 - The simulator presents a separate Live Activities permission sheet after the first request. Compact content appeared only after granting it, so the demo instructions now call this out.
 - FileProvider placeholders can interfere with Xcode output; verification uses a content-only temporary copy and DerivedData under `/tmp`.
+- The in-app browser reaches App Store Connect but currently returns to its login screen; user authentication and any two-factor challenge must be completed before app-record or TestFlight operations.
+- The installed signing certificate's parenthetical identifier is a user identifier; its `OU=89CGFQ24U5` value is the actual Team ID. Automatic provisioning reaches Apple with that correction, but the available Personal Team has no registered device and cannot complete the TestFlight distribution path.
 
 ## Verification
 
@@ -70,4 +77,4 @@ The largest risk is a confident wrong-vehicle selection caused by stale, branche
 
 ## Exact next action
 
-Obtain a public-data service key, select official Jeju route IDs, and collect a quota-respecting multi-poll trace with `scripts/transit-spike/run.ts`.
+Authenticate App Store Connect, select or obtain a paid team with a build-upload role, then validate a signed archive and upload build `0.1.0 (1)`.
