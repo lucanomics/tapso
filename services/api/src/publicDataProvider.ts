@@ -1,0 +1,144 @@
+import type { RouteRequest, StopOnRoute, VehicleObservation } from "./domain.ts";
+import {
+  ProviderConfigurationError,
+  ProviderResponseError,
+  type TransitProvider,
+} from "./provider.ts";
+
+type FetchLike = typeof fetch;
+type UnknownRecord = Record<string, unknown>;
+
+export interface PublicDataProviderOptions {
+  serviceKey?: string;
+  baseURL?: string;
+  fetchImplementation?: FetchLike;
+}
+
+export class PublicDataUltraPrecisionProvider implements TransitProvider {
+  private readonly serviceKey?: string;
+  private readonly baseURL: string;
+  private readonly fetchImplementation: FetchLike;
+
+  constructor(options: PublicDataProviderOptions = {}) {
+    this.serviceKey = options.serviceKey ?? process.env.PUBLIC_DATA_SERVICE_KEY;
+    this.baseURL = options.baseURL ?? process.env.PUBLIC_DATA_BASE_URL ?? "https://apis.data.go.kr/B551982/rte";
+    this.fetchImplementation = options.fetchImplementation ?? fetch;
+  }
+
+  async stops(request: RouteRequest): Promise<StopOnRoute[]> {
+    const items = await this.request("/ps_info", request);
+    return items.map((item, index) => ({
+      stopId: stringField(item, "stopId", "stop_no", "sttnId", "staId") ?? `sequence-${index + 1}`,
+      name: stringField(item, "stopNm", "sttnNm", "staNm") ?? "Unknown stop",
+      sequence: numberField(item, "stopSeq", "sttnSeq", "staOrd") ?? index + 1,
+      directionCode: stringField(item, "drcGbnCd"),
+      latitude: numberField(item, "lat", "gpsY"),
+      longitude: numberField(item, "lot", "lon", "gpsX"),
+    }));
+  }
+
+  async vehicles(request: RouteRequest): Promise<VehicleObservation[]> {
+    const items = await this.request("/rtm_loc_info", request);
+    return items.map((item) => ({
+      vehicleId: requiredString(item, "vhclNo"),
+      routeId: stringField(item, "rteId") ?? request.routeId,
+      observedAt: normalizeTimestamp(stringField(item, "gthrDt")),
+      stopSequence: numberField(item, "stopSeq", "sttnSeq", "staOrd"),
+      directionCode: stringField(item, "oprDrct", "drcGbnCd"),
+      latitude: numberField(item, "lat"),
+      longitude: numberField(item, "lot", "lon"),
+      speedKph: numberField(item, "oprSpd"),
+      eventCode: stringField(item, "evtCd", "evtType"),
+    }));
+  }
+
+  private async request(path: string, request: RouteRequest): Promise<UnknownRecord[]> {
+    if (!this.serviceKey) {
+      throw new ProviderConfigurationError("PUBLIC_DATA_SERVICE_KEY is required for live transit calls");
+    }
+
+    const url = new URL(`${this.baseURL}${path}`);
+    url.searchParams.set("serviceKey", this.serviceKey);
+    url.searchParams.set("pageNo", "1");
+    url.searchParams.set("numOfRows", "1000");
+    url.searchParams.set("type", "json");
+    url.searchParams.set("stdgCd", request.standardRegionCode);
+    url.searchParams.set("rteId", request.routeId);
+
+    const response = await this.fetchImplementation(url, {
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!response.ok) {
+      throw new ProviderResponseError(`Transit provider returned HTTP ${response.status}`);
+    }
+
+    const payload: unknown = await response.json();
+    const resultCode = nestedString(payload, ["response", "header", "resultCode"]);
+    if (resultCode && resultCode !== "00" && resultCode !== "0") {
+      const message = nestedString(payload, ["response", "header", "resultMsg"]) ?? "unknown provider error";
+      throw new ProviderResponseError(`Transit provider error ${resultCode}: ${message}`);
+    }
+    return extractItems(payload);
+  }
+}
+
+function extractItems(payload: unknown): UnknownRecord[] {
+  if (!isRecord(payload)) throw new ProviderResponseError("Provider payload is not an object");
+  const response = payload.response;
+  if (!isRecord(response)) throw new ProviderResponseError("Provider payload has no response object");
+  const body = response.body;
+  if (!isRecord(body)) throw new ProviderResponseError("Provider payload has no body object");
+  const itemsContainer = body.items;
+  if (itemsContainer === "" || itemsContainer == null) return [];
+  const value = isRecord(itemsContainer) ? itemsContainer.item : itemsContainer;
+  if (Array.isArray(value)) return value.filter(isRecord);
+  if (isRecord(value)) return [value];
+  return [];
+}
+
+function isRecord(value: unknown): value is UnknownRecord {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function nestedString(value: unknown, path: string[]): string | undefined {
+  let current: unknown = value;
+  for (const key of path) {
+    if (!isRecord(current)) return undefined;
+    current = current[key];
+  }
+  return typeof current === "string" || typeof current === "number" ? String(current) : undefined;
+}
+
+function stringField(item: UnknownRecord, ...keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = item[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (typeof value === "number") return String(value);
+  }
+  return undefined;
+}
+
+function requiredString(item: UnknownRecord, key: string): string {
+  const value = stringField(item, key);
+  if (!value) throw new ProviderResponseError(`Missing required field: ${key}`);
+  return value;
+}
+
+function numberField(item: UnknownRecord, ...keys: string[]): number | undefined {
+  const raw = stringField(item, ...keys);
+  if (raw === undefined) return undefined;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : undefined;
+}
+
+function normalizeTimestamp(value?: string): string {
+  if (!value) return new Date(0).toISOString();
+  const compact = value.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/);
+  if (compact) {
+    const [, year, month, day, hour, minute, second] = compact;
+    return `${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`;
+  }
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? new Date(0).toISOString() : date.toISOString();
+}

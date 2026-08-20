@@ -1,0 +1,30 @@
+{
+  "response": {
+    "header": { "resultCode": "00", "resultMsg": "NORMAL SERVICE." },
+    "body": {
+      "items": {
+        "item": [
+          {
+            "vhclNo": "SYNTHETIC-JEJU-201-A",
+            "rteId": "SYNTHETIC-ROUTE-201",
+            "gthrDt": "20260820120000",
+            "lat": "33.499621",
+            "lot": "126.531188",
+            "oprDrct": "1",
+            "oprSpd": "28",
+            "evtCd": "1",
+            "evtType": "NORMAL",
+            "totDt": "530"
+          }
+        ]
+      },
+      "numOfRows": 1000,
+      "pageNo": 1,
+      "totalCount": 1
+    }
+  },
+  "_fixture": {
+    "synthetic": true,
+    "purpose": "Adapter contract test only; not captured production data"
+  }
+}

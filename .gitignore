@@ -1,0 +1,29 @@
+# Apple / Xcode
+.DS_Store
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+
+# SwiftPM
+.build/
+.swiftpm/
+
+# Node
+node_modules/
+coverage/
+dist/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.p8
+*.p12
+*.mobileprovision
+
+# Local reports
+work/
+outputs/
+*.xcresult
