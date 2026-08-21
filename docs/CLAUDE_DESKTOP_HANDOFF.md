@@ -13,12 +13,14 @@ You are taking over a real, partially completed production-oriented iOS reposito
 - Absolute path: `/Users/seonjaekim/Documents/Codex/2026-08-20/new-chat`
 - GitHub: `https://github.com/lucanomics/tapso`
 - Expected branch at handoff: `main`
-- Expected clean HEAD: `94b7505` (`Merge pull request #4 from lucanomics/codex/testflight-account-blocker`)
+- Expected clean HEAD: the latest `main` merge commit; `git log --oneline -6` is the authority
 - Existing merged PRs:
   - #1: Dynamic Island primary ride surface
   - #2: Jeju Dynamic Island visual polish
   - #3: TestFlight demo readiness
   - #4: verified TestFlight account blockers
+  - #5: Claude Desktop release handoff
+  - a follow-up PR resolving the Apple team identity and recording the paid-membership blocker
 
 First run `git status --short --branch`, `git log --oneline -6`, and `git remote -v`. Preserve unrelated user work. For changes, create a branch prefixed with `codex/` or `claude/`, run verification, review the diff and secret exposure, then commit, push, open a PR, wait for CI, and merge only when checks pass and permissions allow.
 
@@ -98,36 +100,36 @@ xcodebuild -project apps/ios/Tapso.xcodeproj -scheme Tapso \
 
 If the exact simulator name is unavailable, discover a valid installed simulator and document the substitution. Because the repository is in a FileProvider-managed location, keep sources downloaded and put DerivedData/archive output under `/tmp`.
 
-### Critical Apple account ambiguity — do not guess
+### Apple account status — resolved, do not re-litigate
 
-The user has explicitly clarified: **“Luca Kim is the owner; the Luca Kim / michael account is my account.”** Do not tell the user to log into the separate account that appeared in the organization user list, and do not request or use someone else's credentials.
+The earlier ambiguity was reconciled on 2026-08-21 using read-only local checks. **Both** the account owner's description and the Apple UI were accurate; they described different things.
 
-However, the observed Apple UI is internally inconsistent with the user's understanding and must be reconciled safely:
+Verified facts:
 
-- App Store Connect account menu showed the current user as `Luca Kim`.
-- The selected App Store Connect account/team was named `Gaeul Park`.
-- Under `Users and Access`, Luca Kim's row was shown as `Marketing`.
-- A separate row was shown as `Account Holder, Admin`.
-- Xcode showed two teams: `Gaeul Park, Marketing` and `Personal Team`.
-- The only valid local signing identity was an Apple Development certificate whose subject `OU`/Team ID is `89CGFQ24U5`.
-- Xcode cached `89CGFQ24U5` as `Luca Kim (Personal Team)`.
-- The project currently uses `DEVELOPMENT_TEAM = 89CGFQ24U5`.
-- Automatic device signing reached Apple but failed because the Personal Team had no registered device and no provisioning profiles for the app or extension.
-- The Developer account page reached with the Luca login showed a normal/free developer profile rather than paid-team Certificates, Identifiers & Profiles access.
-- App Store Connect displayed a pending updated Apple Developer Program License Agreement for the selected organization.
-- The in-app App Store Connect session was logged out at the end of the prior session.
+- Xcode holds exactly one Apple ID account, and it resolves to exactly one team: `89CGFQ24U5`, `Luca Kim (Personal Team)`, `teamType = Personal Team`, `isFreeProvisioningTeam = true`.
+- The single keychain signing identity is an **Apple Development** certificate with subject `OU=89CGFQ24U5`, `O=Luca Kim`, valid 2026-07-09 → 2027-07-09. There is no Apple Distribution certificate.
+- No provisioning profiles are installed.
+- The project uses `DEVELOPMENT_TEAM = 89CGFQ24U5`, which is that free Personal Team.
 
-Interpretation: Luca may own the Apple ID and Personal Team while only holding Marketing access in a different organization, or Apple may be showing the wrong selected provider/team. This is an unresolved team-selection/membership issue, not evidence that the user does not own their Apple account.
+Reproduce without credentials:
+
+```bash
+security find-identity -v -p codesigning
+plutil -extract IDEProvisioningTeamByIdentifier xml1 -o - \
+  ~/Library/Preferences/com.apple.dt.Xcode.plist
+```
+
+Interpretation, now settled: the owner does own their Apple ID and its team. That team is simply a **free Personal Team**, not a paid membership. Separately, the same Apple ID holds a `Marketing` seat in another organization with a different Account Holder, which is why App Store Connect showed the owner as the signed-in person while the selected provider carried a different organization name. `Marketing` grants no Certificates, Identifiers & Profiles access, so that organization correctly never appears as a signing team in Xcode.
+
+The blocker is therefore **an absent paid Apple Developer Program membership** — not a wrong account, not a mis-selected provider, and not something further investigation can resolve. A free Personal Team cannot create App Store distribution signing or upload to TestFlight.
 
 Required safe handling:
 
 1. Ask the user to log in themselves when credentials or 2FA are required.
-2. After login, identify the active provider/team and membership type using read-only checks.
-3. Verify whether Luca has an active paid Apple Developer Program membership of their own or authorized access to a paid organization team.
-4. Do not create TAPSO under `Gaeul Park` unless the user explicitly confirms that team is authorized for this product.
-5. Do not accept legal agreements, buy/renew membership, change account ownership, create API keys, or alter user roles on the user's behalf without action-time confirmation; legal and financial acceptance must be performed by the user.
-6. Never treat the parenthetical code in a certificate display name as the Team ID. Inspect the certificate subject `OU`; the currently verified personal Team ID is `89CGFQ24U5`.
-7. Do not overwrite the project Team ID until the correct paid team is positively identified.
+2. Do not accept legal agreements, buy or renew a membership, change account ownership, create API keys, or alter user roles on the user's behalf. Legal and financial acceptance must be performed by the user.
+3. Do not create or distribute TAPSO under the other organization unless the user explicitly confirms it is authorized for this product.
+4. Never treat the parenthetical code in a certificate display name as the Team ID; read the subject `OU`.
+5. Do not overwrite `DEVELOPMENT_TEAM` until a paid Team ID is positively identified. Enrollment produces a Team ID different from `89CGFQ24U5`.
 
 ### Immediate objective
 
@@ -135,10 +137,10 @@ Resume from the account/signing boundary and take the work as far as safely poss
 
 1. Confirm `main` is clean and synced.
 2. Re-read the handoff and release docs.
-3. Have the user authenticate the Luca account in the browser/Xcode when prompted.
-4. Determine the correct paid team/provider and its Team ID without changing project files yet.
+3. Confirm a paid Apple Developer Program team now exists (Option A enrollment by the owner, or Option B an authorized organization role). If neither is in place, stop here — this is the only real gate.
+4. Read the verified paid Team ID from Xcode or the Developer Portal without changing project files yet.
 5. Confirm the latest Apple Developer Program agreement is accepted for that exact team.
-6. Confirm the account has permission to create App IDs, provisioning profiles, app records, and upload builds.
+6. Confirm the account has permission to create App IDs, provisioning profiles, app records, and upload builds. Also confirm the build host has several GB of free disk.
 7. Register these identifiers under the verified paid team if they do not already exist:
    - `com.lucanomics.tapso`
    - `com.lucanomics.tapso.LiveActivity`
