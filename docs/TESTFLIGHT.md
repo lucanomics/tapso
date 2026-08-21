@@ -12,7 +12,27 @@
 - Build: increment `CURRENT_PROJECT_VERSION` for every upload
 - Privacy policy URL: `https://github.com/lucanomics/tapso/blob/main/docs/PRIVACY.md`
 
-The bundle identifiers must be registered under the paid Apple Developer team that owns the App Store Connect record. Automatic signing is enabled. App Store Connect currently identifies the uploader as `Marketing`; that role cannot finish app-record, signing, or upload work. The organization Account Holder must first accept the pending Apple Developer Program License Agreement and grant one of the upload-capable roles listed below with Certificates, Identifiers & Profiles access.
+The bundle identifiers must be registered under a paid Apple Developer Program team that owns the App Store Connect record. Automatic signing is enabled.
+
+## Team prerequisite (current blocker)
+
+Verified read-only on 2026-08-21: no paid team is currently reachable from the build host. Xcode holds one Apple ID account resolving to one team, `89CGFQ24U5` / `Luca Kim (Personal Team)`, with `isFreeProvisioningTeam = true`. The only installed signing identity is an Apple Development certificate; there is no Apple Distribution certificate and there are no provisioning profiles. A free Personal Team cannot produce App Store distribution signing and cannot upload to TestFlight.
+
+Reproduce the check without credentials:
+
+```bash
+security find-identity -v -p codesigning
+plutil -extract IDEProvisioningTeamByIdentifier xml1 -o - \
+  ~/Library/Preferences/com.apple.dt.Xcode.plist
+```
+
+Exactly one of the following must be completed by the account owner before the rest of this document applies.
+
+**Option A — own paid membership (keeps TAPSO under the repository owner).** Enroll the owner's Apple ID in the Apple Developer Program as Individual/Sole Proprietor. This is a paid annual purchase and a legal-agreement acceptance, so it must be performed by the owner. Enrollment creates a new paid team whose Team ID will differ from the Personal Team `89CGFQ24U5`; `DEVELOPMENT_TEAM` in `apps/ios/project.yml` must then be updated to the new value.
+
+**Option B — authorized organization team.** The separate organization in which this Apple ID holds a `Marketing` seat has a different Account Holder and a pending updated Apple Developer Program License Agreement. That Account Holder would have to accept the agreement and grant `Admin`, `App Manager`, or `Developer` with Certificates, Identifiers & Profiles access. `Marketing` grants none of that, which is why the organization does not appear as a signing team in Xcode. Do not distribute TAPSO under that organization without the repository owner's explicit authorization.
+
+The build host must also have several GB of free disk before archiving; see `KNOWN_ISSUES.md`.
 
 ## Beta metadata
 
@@ -42,8 +62,8 @@ Set this to an address monitored by the release owner in App Store Connect. Do n
 
 ## Upload checklist
 
-1. Confirm the latest Apple Developer agreements are accepted.
-2. Grant the uploader an `Admin`, `App Manager`, or `Developer` App Store Connect role and Certificates, Identifiers & Profiles access.
+1. Satisfy the **Team prerequisite** above and confirm the latest Apple Developer agreements are accepted for that exact team.
+2. Confirm the signing account can reach Certificates, Identifiers & Profiles for that team, and update `DEVELOPMENT_TEAM` in `apps/ios/project.yml` if the verified paid Team ID differs from the value currently checked in.
 3. Register the app and extension bundle identifiers, then select that paid team in Xcode.
 4. Create the App Store Connect record using the values above.
 5. Archive with `Release`, validate, and upload through Xcode Organizer.

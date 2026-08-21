@@ -42,6 +42,10 @@ General map navigation, accounts, payments, tourism content, Android, production
 - The workspace is FileProvider-managed, so sources must remain downloaded and signing output must use an unsynced DerivedData directory.
 - An unsigned generic-device Release archive succeeds and embeds the Live Activity extension. App Store signing and upload remain unverified until Apple account access is established.
 - The TestFlight-ready archive compiles as version `0.1.0 (1)`, contains the 1024×1024 AppIcon rendition, uses `com.lucanomics.tapso`, and embeds `com.lucanomics.tapso.LiveActivity`.
+- Re-verified on 2026-08-21 at `a7b2734`: 38 Swift transit-core tests, 5 TypeScript API tests, and 8 iOS Simulator tests pass. `xcodegen generate` reproduces the checked-in `Tapso.xcodeproj` with no diff.
+- The only Apple team available to the build host is `89CGFQ24U5` / `Luca Kim (Personal Team)`, cached by Xcode with `isFreeProvisioningTeam = true` and `teamType = Personal Team`. A free Personal Team cannot issue App Store distribution signing or upload to TestFlight.
+- The single keychain signing identity is an Apple Development certificate with `OU=89CGFQ24U5`, `O=Luca Kim`, valid 2026-07-09 → 2027-07-09. No Apple Distribution certificate and no provisioning profiles are installed.
+- The build host has ~394 MB free disk, which is insufficient for a Release archive.
 
 ## Decisions
 
@@ -61,6 +65,8 @@ General map navigation, accounts, payments, tourism content, Android, production
 - App Store Connect authentication succeeds for the current uploader account, but it has the `Marketing` role only. The Apps page exposes app-bundle creation rather than the new-app record workflow, and Xcode does not grant this account access to the organization's Certificates, Identifiers & Profiles resources.
 - App Store Connect reports an updated Apple Developer Program License Agreement. The organization Account Holder must review and accept it before new apps or updates can be submitted; this legal acceptance cannot be delegated to the uploader.
 - The installed signing certificate's parenthetical identifier is a user identifier; its `OU=89CGFQ24U5` value is the actual Team ID. Automatic provisioning reaches Apple with that correction, but the available Personal Team has no registered device and cannot complete the TestFlight distribution path.
+- The apparent contradiction between the account owner's description and the Apple UI is resolved, and both were accurate. The owner does own the Apple ID and its team; that team is simply a free Personal Team rather than a paid membership. Separately, the same Apple ID holds a `Marketing` seat in another organization, which is why App Store Connect showed the owner as the signed-in person while the selected provider carried a different organization name. `Marketing` carries no Developer Portal access, so that organization correctly never appears as a signing team in Xcode. The blocker is therefore an absent paid membership, not a wrong account or a mis-selected provider.
+- `xcodebuild` surfaced `No space left on device` while writing its result bundle even though the test run itself succeeded, which is how the host disk exhaustion was discovered.
 
 ## Verification
 
@@ -78,4 +84,11 @@ The largest risk is a confident wrong-vehicle selection caused by stale, branche
 
 ## Exact next action
 
-Have the organization Account Holder accept the updated Apple Developer Program License Agreement and grant the uploader an `Admin`, `App Manager`, or `Developer` role with Certificates, Identifiers & Profiles access. Then register both bundle identifiers, create the TAPSO app record, select the paid team in Xcode, validate a signed archive, and upload build `0.1.0 (1)`.
+Obtain a paid Apple Developer Program team, which is the single remaining gate on every distribution milestone. Exactly one of:
+
+- **Option A (keeps TAPSO under the repository owner):** the owner enrolls their own Apple ID in the Apple Developer Program as Individual/Sole Proprietor. This is a paid purchase plus a legal acceptance and must be done by the owner. The resulting Team ID will differ from `89CGFQ24U5` and must replace `DEVELOPMENT_TEAM` in `apps/ios/project.yml`.
+- **Option B (organization):** the other organization's Account Holder accepts the pending Apple Developer Program License Agreement and grants `Admin`, `App Manager`, or `Developer` with Certificates, Identifiers & Profiles access, and the repository owner explicitly authorizes shipping TAPSO under that organization.
+
+Also free several GB of disk on the build host before attempting an archive.
+
+Once a paid team is verified: register `com.lucanomics.tapso` and `com.lucanomics.tapso.LiveActivity`, create the App Store Connect record from `docs/TESTFLIGHT.md`, update the Team ID, regenerate the project, produce and validate a signed Release archive, upload `0.1.0 (1)`, and assign the processed build to an internal TestFlight group.
