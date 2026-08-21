@@ -1,5 +1,7 @@
 # Handoff
 
+For the release-focused Claude Desktop/Claude Code continuation, use `docs/CLAUDE_DESKTOP_HANDOFF.md`. It records the verified build state and the unresolved Apple team/provider identity without assuming that another listed organization account belongs to the user.
+
 ## What works
 
 - `packages/transit-core`: deterministic Swift matching, route progress, freshness, journey state, and demo fixtures.
