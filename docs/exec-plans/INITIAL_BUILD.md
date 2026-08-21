@@ -58,7 +58,8 @@ General map navigation, accounts, payments, tourism content, Android, production
 
 - The simulator presents a separate Live Activities permission sheet after the first request. Compact content appeared only after granting it, so the demo instructions now call this out.
 - FileProvider placeholders can interfere with Xcode output; verification uses a content-only temporary copy and DerivedData under `/tmp`.
-- The in-app browser reaches App Store Connect but currently returns to its login screen; user authentication and any two-factor challenge must be completed before app-record or TestFlight operations.
+- App Store Connect authentication succeeds for the current uploader account, but it has the `Marketing` role only. The Apps page exposes app-bundle creation rather than the new-app record workflow, and Xcode does not grant this account access to the organization's Certificates, Identifiers & Profiles resources.
+- App Store Connect reports an updated Apple Developer Program License Agreement. The organization Account Holder must review and accept it before new apps or updates can be submitted; this legal acceptance cannot be delegated to the uploader.
 - The installed signing certificate's parenthetical identifier is a user identifier; its `OU=89CGFQ24U5` value is the actual Team ID. Automatic provisioning reaches Apple with that correction, but the available Personal Team has no registered device and cannot complete the TestFlight distribution path.
 
 ## Verification
@@ -77,4 +78,4 @@ The largest risk is a confident wrong-vehicle selection caused by stale, branche
 
 ## Exact next action
 
-Authenticate App Store Connect, select or obtain a paid team with a build-upload role, then validate a signed archive and upload build `0.1.0 (1)`.
+Have the organization Account Holder accept the updated Apple Developer Program License Agreement and grant the uploader an `Admin`, `App Manager`, or `Developer` role with Certificates, Identifiers & Profiles access. Then register both bundle identifiers, create the TAPSO app record, select the paid team in Xcode, validate a signed archive, and upload build `0.1.0 (1)`.

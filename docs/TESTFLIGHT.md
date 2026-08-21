@@ -12,7 +12,7 @@
 - Build: increment `CURRENT_PROJECT_VERSION` for every upload
 - Privacy policy URL: `https://github.com/lucanomics/tapso/blob/main/docs/PRIVACY.md`
 
-The bundle identifiers must be registered under the paid Apple Developer team that owns the App Store Connect record. Automatic signing is enabled. The currently configured local team can compile for Simulator, but TestFlight upload still requires a team role with Certificates, Identifiers & Profiles access.
+The bundle identifiers must be registered under the paid Apple Developer team that owns the App Store Connect record. Automatic signing is enabled. App Store Connect currently identifies the uploader as `Marketing`; that role cannot finish app-record, signing, or upload work. The organization Account Holder must first accept the pending Apple Developer Program License Agreement and grant one of the upload-capable roles listed below with Certificates, Identifiers & Profiles access.
 
 ## Beta metadata
 
