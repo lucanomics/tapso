@@ -4,7 +4,7 @@
 
 Build and publish a responsive Korean-first product website for TAPSO under `apps/web`. The public page must explain the narrow bus-companion promise, the Dynamic Island experience, vehicle matching, privacy boundary, and current demo status. It must be deployable to Vercel from the GitHub repository.
 
-This work does not claim live Jeju reliability, collect leads, add user accounts, expose transit credentials, or imply that TestFlight is already available.
+This work does not claim live Jeju reliability, add user accounts, expose transit credentials, or imply that TestFlight is already available. The waitlist prepares an application in the rider's own mail app; the page does not silently store form data.
 
 ## Verified constraints and assumptions
 
@@ -27,7 +27,7 @@ This work does not claim live Jeju reliability, collect leads, add user accounts
 - Use React + Vite because the repo has no existing web framework and the page benefits from a small interactive Dynamic Island demo.
 - Keep app UI and site copy code-native; use generated imagery only for the standalone basalt companion and existing iOS screenshots for product proof.
 - Alternate true mist-white editorial sections with one volcanic-ink product band instead of repeating card grids.
-- Link the primary public development CTA to GitHub while TestFlight remains truthfully labeled as preparing.
+- Keep public CTAs focused on the rider: a mail-based waitlist is primary and the interactive product story is secondary. Do not expose a GitHub CTA in the public interface.
 
 ## Reproduction and evidence
 
@@ -60,10 +60,10 @@ Vercel deployment `dpl_59QDWXwmBRAYNBwkJpa3EMdchram` reached `READY`, returned H
 
 ### Above-the-fold copy diff
 
-- Concept: “타고. 앱을 닫고. 제때 내리세요.”
-- Implementation: unchanged.
-- Supporting sentence: unchanged in meaning; line wrapping is responsive rather than baked into an image.
-- CTAs: “데모 둘러보기” and “GitHub에서 보기” remain above the fold on desktop and immediately follow the lead copy on mobile.
+- Original concept: “타고. 앱을 닫고. 제때 내리세요.”
+- Waitlist revision: “혼저 탑서. 내릴 땐 알려드리쿠다.” The product promise stays intact while the opening line uses approachable 제주어.
+- Supporting sentence: unchanged in meaning; line wrapping remains responsive rather than baked into an image.
+- CTAs: “사전예약 신청하기” is primary and “기능 먼저 둘러보기” is secondary. Public GitHub CTAs are removed from the header, hero, final section, and footer.
 
 ## Progress
 
@@ -73,6 +73,7 @@ Vercel deployment `dpl_59QDWXwmBRAYNBwkJpa3EMdchram` reached `READY`, returned H
 - [x] Run desktop/mobile visual QA and production build.
 - [x] Push, open PR, run local replacement checks, and merge PR #7. GitHub-hosted jobs were prevented from starting by the account Actions budget rather than a test failure.
 - [x] Deploy to Vercel production and verify the public URL.
+- [x] Replace public GitHub CTAs with a 제주어-led waitlist flow and an honest mail-app handoff.
 
 ## Risks and next action
 

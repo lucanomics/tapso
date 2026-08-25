@@ -32,6 +32,7 @@ export function BusIcon(props: IconProps) {
   );
 }
 
+// Kept for compatibility with local archived view copies; the public app does not render it.
 export function GitHubIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>

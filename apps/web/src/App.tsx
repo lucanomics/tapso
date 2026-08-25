@@ -1,16 +1,14 @@
 import IslandExperience from "./components/IslandExperience";
+import WaitlistForm from "./components/WaitlistForm";
 import {
   ArrowIcon,
   BusIcon,
-  GitHubIcon,
   LinkIcon,
   RefreshIcon,
   ShieldIcon,
   SignalIcon,
   StopListIcon,
 } from "./components/Icons";
-
-const githubUrl = "https://github.com/lucanomics/tapso";
 
 function Brand() {
   return (
@@ -32,8 +30,8 @@ function Header() {
           <a href="#island">다이나믹 아일랜드</a>
           <a href="#matching">안전한 매칭</a>
         </nav>
-        <a className="header-action" href="#island">
-          데모 둘러보기
+        <a className="header-action" href="#waitlist">
+          사전예약
         </a>
       </div>
     </header>
@@ -45,19 +43,18 @@ function Hero() {
     <section className="hero" id="top">
       <div className="hero-grid">
         <div className="hero-copy">
-          <h1>타고. 앱을 닫고.<br />제때 내리세요.</h1>
+          <h1>혼저 탑서.<br />내릴 땐 알려드리쿠다.</h1>
           <p>
             제주 버스의 물리 차량을 확인하고, 남은 정류장을 다이나믹
             아일랜드에 또렷하게 보여주는 승차 동반자.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#island">
-              데모 둘러보기
+            <a className="button button-primary" href="#waitlist">
+              사전예약 신청하기
               <ArrowIcon />
             </a>
-            <a className="button button-secondary" href={githubUrl} target="_blank" rel="noreferrer">
-              <GitHubIcon />
-              GitHub에서 보기
+            <a className="button button-secondary" href="#island">
+              기능 먼저 둘러보기
             </a>
           </div>
         </div>
@@ -176,26 +173,24 @@ function MatchingSection() {
   );
 }
 
-function FinalSection() {
+function WaitlistSection() {
   return (
-    <section className="final-section" id="status">
+    <section className="final-section waitlist-section" id="waitlist">
       <div className="final-copy">
-        <h2>제주에서,<br />내릴 때까지.</h2>
+        <h2>혼저 옵서.<br />첫 소식 전해드리쿠다.</h2>
         <p>
-          현재 데모는 합성 교통 데이터로 제품 흐름을 검증하고 있어요. 실제 제주
-          버스 데이터 연동은 검증 후 단계적으로 공개합니다.
+          현재 합성 교통 데이터로 제품 흐름을 검증하고 있어요. 사전예약을 남기면
+          TestFlight가 준비되는 대로 가장 먼저 알려드릴게요.
         </p>
-        <a className="button button-primary final-button" href={githubUrl} target="_blank" rel="noreferrer">
-          <GitHubIcon />
-          GitHub에서 개발 보기
-          <ArrowIcon />
-        </a>
-        <div className="testflight-status">
-          <span className="status-clock" aria-hidden="true" />
-          <span>TestFlight 준비 중</span>
+        <div className="support-note">
+          <span aria-hidden="true">🍊</span>
+          <span>후원은 고맙지만, 지금은 첫 승객이 되어주는 게 더 힘이 됩주.</span>
         </div>
       </div>
-      <div className="final-visual" aria-hidden="true">
+      <div className="waitlist-form-wrap">
+        <WaitlistForm />
+      </div>
+      <div className="final-visual waitlist-buddy" aria-hidden="true">
         <span className="jeju-silhouette" />
         <span className="dotted-route" />
         <span className="final-destination" />
@@ -210,10 +205,8 @@ function Footer() {
     <footer>
       <div className="footer-inner">
         <Brand />
-        <p>차량을 추적하고, 승객의 위치는 기본으로 추적하지 않습니다.</p>
-        <a href={githubUrl} target="_blank" rel="noreferrer" aria-label="TAPSO GitHub 저장소 열기">
-          <GitHubIcon />
-        </a>
+        <p>차량은 확인하고, 승객의 위치는 기본으로 추적하지 않수다.</p>
+        <a className="footer-reserve" href="#waitlist">혼저 예약합서</a>
       </div>
     </footer>
   );
@@ -228,7 +221,7 @@ export default function App() {
         <FeatureIntro />
         <IslandSection />
         <MatchingSection />
-        <FinalSection />
+        <WaitlistSection />
       </main>
       <Footer />
     </>
