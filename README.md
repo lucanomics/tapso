@@ -13,6 +13,7 @@ This repository contains a production-shaped first vertical slice. Its determini
 | Local 8 → 0 demo | `IMPLEMENTED` | 1×, 5×, 10×, and manual stepping use production domain types |
 | Lock Screen / Dynamic Island | `VERIFIED` | iOS 26.3 iPhone 17 Pro Simulator: compact 8/2/1/0, expanded, Lock Screen, request/update/end; 4 iOS tests |
 | TypeScript API scaffold | `VERIFIED` | Native Node tests cover matching and official-schema normalization |
+| Marketing website | `IMPLEMENTED` | React + Vite site under `apps/web`; responsive browser QA and Vercel deployment workflow |
 | Official API contract | `VERIFIED` | Swagger paths and fields inspected from data.go.kr resource 15157601 |
 | Live Jeju response quality | `BLOCKED_BY_CREDENTIALS` | No public-data service key was available; no live response is claimed |
 | Remote APNs updates | `BLOCKED_BY_CREDENTIALS` | Requires Apple team, bundle, and APNs signing credentials |
@@ -41,9 +42,18 @@ PUBLIC_DATA_SERVICE_KEY='…' node --experimental-strip-types \
 
 Never put the government key in the iOS target or commit `.env`.
 
+To run the public product website locally:
+
+```bash
+npm install --prefix apps/web
+npm run build --prefix apps/web
+npm run dev --prefix apps/web
+```
+
 ## Repository map
 
 - `apps/ios`: SwiftUI app, Live Activity extension, localized resources, and iOS tests.
+- `apps/web`: Korean-first responsive product website and interactive Dynamic Island story.
 - `packages/transit-core`: UI-independent Swift domain, matching, progress, and state machine.
 - `services/api`: TypeScript normalization, matching endpoint, provider and APNs boundaries.
 - `fixtures/transit`: explicitly synthetic deterministic data.
