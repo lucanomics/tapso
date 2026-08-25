@@ -37,7 +37,9 @@ From `apps/web`:
     npm run build
     npm run dev -- --host 127.0.0.1
 
-Verification evidence and deployment URLs are added here as work completes.
+Production: [https://tapso-nu.vercel.app](https://tapso-nu.vercel.app)
+
+Vercel deployment `dpl_59QDWXwmBRAYNBwkJpa3EMdchram` reached `READY`, returned HTTP 200, loaded every production image, preserved the 1440px no-overflow layout, and passed the public `내려요` interaction smoke test.
 
 ### Browser QA
 
@@ -69,9 +71,9 @@ Verification evidence and deployment URLs are added here as work completes.
 - [x] Generate four coordinated concepts and a transparent character cutout.
 - [x] Implement the site.
 - [x] Run desktop/mobile visual QA and production build.
-- [ ] Push, open PR, pass CI, and merge.
-- [ ] Deploy to Vercel production and verify the public URL.
+- [x] Push, open PR, run local replacement checks, and merge PR #7. GitHub-hosted jobs were prevented from starting by the account Actions budget rather than a test failure.
+- [x] Deploy to Vercel production and verify the public URL.
 
 ## Risks and next action
 
-The web build job is included in repository CI. The next action is to push the branch, merge the green PR, and deploy the merged site to Vercel.
+The website is live. GitHub Actions remains limited by the account Actions budget; repository CI includes the web job and will run once budget is available. The next product-distribution dependency is still Apple Developer Program enrollment approval.
