@@ -4,6 +4,8 @@ TAPSO is an iPhone-first Jeju bus ride companion: choose a route and destination
 
 This repository contains a production-shaped first vertical slice. Its deterministic demo runs the same vehicle matching, remaining-stop, journey-state, and ActivityKit paths intended for real data.
 
+Public product site: [tapso-nu.vercel.app](https://tapso-nu.vercel.app)
+
 ## Current status
 
 | Area | Status | Evidence |
