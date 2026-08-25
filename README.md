@@ -15,7 +15,7 @@ Public product site: [tapso-nu.vercel.app](https://tapso-nu.vercel.app)
 | Local 8 → 0 demo | `IMPLEMENTED` | 1×, 5×, 10×, and manual stepping use production domain types |
 | Lock Screen / Dynamic Island | `VERIFIED` | iOS 26.3 iPhone 17 Pro Simulator: compact 8/2/1/0, expanded, Lock Screen, request/update/end; 4 iOS tests |
 | TypeScript API scaffold | `VERIFIED` | Native Node tests cover matching and official-schema normalization |
-| Marketing website | `IMPLEMENTED` | React + Vite site under `apps/web`; responsive browser QA and Vercel deployment workflow |
+| Marketing website | `IMPLEMENTED` | React + Vite site under `apps/web`; 제주어 hero, mail-based waitlist, responsive QA, and Vercel deployment workflow |
 | Official API contract | `VERIFIED` | Swagger paths and fields inspected from data.go.kr resource 15157601 |
 | Live Jeju response quality | `BLOCKED_BY_CREDENTIALS` | No public-data service key was available; no live response is claimed |
 | Remote APNs updates | `BLOCKED_BY_CREDENTIALS` | Requires Apple team, bundle, and APNs signing credentials |

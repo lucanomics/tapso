@@ -1058,6 +1058,247 @@ p {
   max-width: 600px;
 }
 
+.waitlist-section {
+  min-height: 820px;
+  grid-template-columns: minmax(390px, 0.78fr) minmax(540px, 1.22fr);
+}
+
+.waitlist-section .final-copy {
+  align-self: center;
+}
+
+.support-note {
+  max-width: 510px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgb(30 105 96 / 16%);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #405b63;
+  font-size: 15px;
+  font-weight: 720;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.support-note > span:first-child {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.waitlist-form-wrap {
+  position: relative;
+  z-index: 6;
+}
+
+.waitlist-card {
+  width: min(100%, 620px);
+  margin-left: auto;
+  padding: 38px;
+  border: 1px solid rgb(255 255 255 / 86%);
+  border-radius: 32px;
+  color: var(--ink);
+  background: rgb(255 255 255 / 86%);
+  box-shadow: 0 30px 80px rgb(7 43 50 / 13%);
+  backdrop-filter: blur(22px);
+}
+
+.waitlist-card-heading {
+  margin-bottom: 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.waitlist-card-heading > span {
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.waitlist-card-heading strong {
+  color: var(--mint-deep);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.form-row {
+  margin-bottom: 18px;
+}
+
+.form-row label {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #29424b;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.form-row label span {
+  color: #839399;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  border: 1px solid #d7e4e5;
+  border-radius: 15px;
+  color: #102b34;
+  background: rgb(250 253 253 / 92%);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.form-row input,
+.form-row select {
+  height: 52px;
+  padding: 0 16px;
+}
+
+.form-row select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #507078 50%),
+    linear-gradient(135deg, #507078 50%, transparent 50%);
+  background-position:
+    calc(100% - 19px) 22px,
+    calc(100% - 14px) 22px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.form-row textarea {
+  min-height: 92px;
+  padding: 14px 16px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.form-row input::placeholder,
+.form-row textarea::placeholder {
+  color: #9aabad;
+  font-weight: 550;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  border-color: var(--mint-deep);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(47 199 170 / 13%);
+}
+
+.consent-row {
+  margin: 6px 0 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #526970;
+  font-size: 12px;
+  font-weight: 680;
+  line-height: 1.55;
+}
+
+.consent-row input {
+  width: 17px;
+  height: 17px;
+  margin: 1px 0 0;
+  accent-color: var(--mint-deep);
+}
+
+.waitlist-submit {
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #06241f;
+  background: var(--mint);
+  box-shadow: 0 14px 30px rgb(30 178 151 / 20%);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.waitlist-submit:hover {
+  background: #45d1b6;
+  box-shadow: 0 17px 34px rgb(30 178 151 / 28%);
+  transform: translateY(-2px);
+}
+
+.waitlist-submit svg,
+.waitlist-ready a svg {
+  width: 19px;
+  height: 19px;
+}
+
+.waitlist-ready {
+  padding: 18px;
+  border: 1px solid rgb(30 178 151 / 24%);
+  border-radius: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 13px;
+  background: #ecfaf6;
+}
+
+.waitlist-ready > span {
+  font-size: 28px;
+}
+
+.waitlist-ready strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.waitlist-ready p {
+  margin: 0;
+  color: #5b7176;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.waitlist-ready a {
+  min-height: 42px;
+  padding: 0 13px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  background: #0b7568;
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.form-privacy {
+  margin: 13px 0 0;
+  color: #819095;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .final-button {
   margin-top: 18px;
 }
@@ -1105,6 +1346,16 @@ p {
 .final-visual {
   position: relative;
   min-height: 520px;
+}
+
+.waitlist-buddy {
+  position: absolute;
+  z-index: 1;
+  right: -7%;
+  bottom: -90px;
+  width: min(650px, 48vw);
+  opacity: 0.2;
+  pointer-events: none;
 }
 
 .final-visual img {
@@ -1200,13 +1451,16 @@ footer .brand span {
 }
 
 .footer-inner > a:last-child {
-  width: 45px;
-  height: 45px;
+  min-height: 45px;
+  padding: 0 16px;
   border: 1px solid #29414a;
   border-radius: 14px;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #d7e4e8;
+  font-size: 13px;
+  font-weight: 850;
   transition: color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
@@ -1390,12 +1644,26 @@ footer .brand span {
     gap: 30px;
   }
 
+  .waitlist-section {
+    gap: 52px;
+  }
+
   .final-copy {
     width: min(100%, 760px);
     margin: 0 auto;
   }
 
   .final-visual {
+    width: min(100%, 760px);
+    margin: 0 auto;
+  }
+
+  .waitlist-buddy {
+    right: -18%;
+    width: 620px;
+  }
+
+  .waitlist-card {
     width: min(100%, 760px);
     margin: 0 auto;
   }
@@ -1666,6 +1934,30 @@ footer .brand span {
     padding: 0 0;
   }
 
+  .waitlist-section {
+    padding-bottom: 112px;
+    gap: 36px;
+  }
+
+  .waitlist-card {
+    padding: 24px 18px;
+    border-radius: 24px;
+  }
+
+  .waitlist-card-heading > span {
+    font-size: 21px;
+  }
+
+  .waitlist-ready {
+    grid-template-columns: auto 1fr;
+  }
+
+  .waitlist-ready a {
+    grid-column: 1 / -1;
+    min-height: 46px;
+    justify-content: center;
+  }
+
   .final-button {
     padding: 0 16px;
     font-size: 14px;
@@ -1673,6 +1965,13 @@ footer .brand span {
 
   .final-visual {
     min-height: 380px;
+  }
+
+  .waitlist-buddy {
+    right: -42%;
+    bottom: -40px;
+    width: 500px;
+    opacity: 0.13;
   }
 
   .final-visual img {
