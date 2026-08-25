@@ -28,3 +28,4 @@ dist/
 work/
 outputs/
 *.xcresult
+.vercel
