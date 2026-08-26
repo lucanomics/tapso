@@ -19,6 +19,8 @@ TAPSO (탑서) is an iPhone-first Jeju bus companion. A rider starts a trip, TAP
 ```bash
 swift test --package-path packages/transit-core
 npm --prefix services/api test
+npm --prefix apps/web test
+npm --prefix apps/web run build
 xcodegen generate --spec apps/ios/project.yml --project apps/ios
 xcodebuild -project apps/ios/Tapso.xcodeproj -scheme Tapso \
   -destination 'platform=iOS Simulator,name=iPhone 17' build test
