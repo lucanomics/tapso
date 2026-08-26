@@ -22,56 +22,69 @@ function Brand() {
 
 function Header() {
   return (
-    <header className="site-header">
-      <div className="header-inner">
-        <Brand />
-        <nav aria-label="주요 메뉴">
-          <a href="#features">기능</a>
-          <a href="#island">다이나믹 아일랜드</a>
-          <a href="#matching">안전한 매칭</a>
-        </nav>
-        <a className="header-action" href="#waitlist">
-          사전예약
-        </a>
-      </div>
+    <header className="figma-header" data-figma-node-id="4:3">
+      <a
+        className="figma-brand-lockup"
+        href="#top"
+        aria-label="TAPSO 탑서 홈"
+        data-figma-node-id="4:4"
+      >
+        TAPSO 탑서
+      </a>
+      <span className="figma-platform-badge" data-figma-node-id="4:5">
+        WEB · iOS · ANDROID
+      </span>
     </header>
   );
 }
 
 function Hero() {
   return (
-    <section className="hero" id="top">
-      <div className="hero-grid">
-        <div className="hero-copy">
-          <h1>혼저 탑서.<br />내릴 땐 알려드리쿠다.</h1>
-          <p>
-            제주 버스의 물리 차량을 확인하고, 남은 정류장을 다이나믹
-            아일랜드에 또렷하게 보여주는 승차 동반자.
+    <section
+      className="figma-hero"
+      id="top"
+      aria-labelledby="tapso-hero-title"
+      data-figma-node-id="4:2"
+    >
+      <div className="figma-hero-canvas">
+        <div className="figma-hero-copy" data-figma-node-id="4:7">
+          <h1 id="tapso-hero-title" data-figma-node-id="4:8">
+            <span>와리지 말앙 혼저 탑서.</span>
+            <span>내릴 땐 알려드리쿠다.</span>
+          </h1>
+          <p data-figma-node-id="4:9">
+            제주 버스를 차량 기준으로 확인하고,
+            <br className="figma-desktop-break" />
+            중요한 여정 순간을 가장 가까운 화면에 보여주는 승차 동반자.
           </p>
-          <div className="hero-actions">
-            <a className="button button-primary" href="#waitlist">
-              사전예약 신청하기
-              <ArrowIcon />
-            </a>
-            <a className="button button-secondary" href="#island">
-              기능 먼저 둘러보기
-            </a>
-          </div>
         </div>
 
-        <div className="hero-product" aria-label="TAPSO 앱과 다이나믹 아일랜드 화면 미리보기">
-          <div className="phone-shell">
-            <span className="phone-speaker" />
-            <img src="/media/active-journey.jpg" alt="TAPSO 탑승 중 화면. 365번 버스 목적지까지 8정류장 남음." />
-          </div>
-          <div className="hero-island-shot">
-            <img src="/media/dynamic-island-expanded.jpg" alt="365번 버스의 확장된 다이나믹 아일랜드 화면" />
-          </div>
-          <img className="hero-buddy" src="/media/dori.png" alt="귤을 얹고 파도와 함께 있는 TAPSO 현무암 친구 돌이" />
-          <span className="hero-route-line" aria-hidden="true" />
+        <div
+          className="figma-dynamic-island"
+          aria-label="365번 버스가 정상 운행 중이며 목적지까지 8정류장 남음"
+          data-figma-node-id="4:10"
+        >
+          <strong className="figma-island-route" data-figma-node-id="4:11">
+            🚌 365
+          </strong>
+          <span className="figma-island-copy" data-figma-node-id="4:12">
+            <strong>제주 바람 따라 잘 가고 있어요.</strong>
+            <span>8 정류장 남음</span>
+          </span>
         </div>
+
+        <div className="figma-dori" aria-hidden="true" data-figma-node-id="4:13">
+          <span className="figma-dori-body" data-figma-node-id="4:14" />
+          <span className="figma-dori-tangerine" data-figma-node-id="4:15" />
+          <span className="figma-dori-face" data-figma-node-id="4:16">
+            • ᴗ •
+          </span>
+        </div>
+
+        <p className="figma-sync-note" data-figma-node-id="4:17">
+          Design system v0.2 · Figma ↔ Web sync · 2026-08-26 · 차량 추적, 승객 GPS 기본 사용 안 함
+        </p>
       </div>
-      <div className="hero-horizon" aria-hidden="true" />
     </section>
   );
 }
