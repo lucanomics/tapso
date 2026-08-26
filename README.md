@@ -15,7 +15,10 @@ Public product site: [tapso-nu.vercel.app](https://tapso-nu.vercel.app)
 | Local 8 → 0 demo | `IMPLEMENTED` | 1×, 5×, 10×, and manual stepping use production domain types |
 | Lock Screen / Dynamic Island | `VERIFIED` | iOS 26.3 iPhone 17 Pro Simulator: compact 8/2/1/0, expanded, Lock Screen, request/update/end; 4 iOS tests |
 | TypeScript API scaffold | `VERIFIED` | Native Node tests cover matching and official-schema normalization |
-| Marketing website | `IMPLEMENTED` | React + Vite site under `apps/web`; 제주어 hero, mail-based waitlist, responsive QA, and Vercel deployment workflow |
+| Marketing website | `IMPLEMENTED` | React + Vite site under `apps/web`; 제주어 hero, responsive QA, and Vercel deployment workflow |
+| Waitlist backend | `IMPLEMENTED` | Vercel Functions in `apps/web/api`; validation, duplicate protection, rate limiting, and confirmation email covered by 90 Node tests |
+| Waitlist against live Supabase and Resend | `BLOCKED_BY_CREDENTIALS` | No project, key, or verified sending domain; see `docs/WAITLIST_SUPPORT_SETUP.md` |
+| Support payment | `NOT ENABLED` | Toss Payments adapter, state machine, and webhook reconciliation are implemented and tested; no merchant account exists |
 | Official API contract | `VERIFIED` | Swagger paths and fields inspected from data.go.kr resource 15157601 |
 | Live Jeju response quality | `BLOCKED_BY_CREDENTIALS` | No public-data service key was available; no live response is claimed |
 | Remote APNs updates | `BLOCKED_BY_CREDENTIALS` | Requires Apple team, bundle, and APNs signing credentials |
@@ -48,14 +51,22 @@ To run the public product website locally:
 
 ```bash
 npm install --prefix apps/web
+npm test --prefix apps/web
 npm run build --prefix apps/web
 npm run dev --prefix apps/web
 ```
 
+The site runs with no credentials. In that state `/api/waitlist` answers
+`503 unavailable` and the form says so rather than claiming a registration was
+stored. Copy `apps/web/.env.example` and read
+[WAITLIST_SUPPORT_SETUP.md](docs/WAITLIST_SUPPORT_SETUP.md) to provision it.
+
 ## Repository map
 
 - `apps/ios`: SwiftUI app, Live Activity extension, localized resources, and iOS tests.
-- `apps/web`: Korean-first responsive product website and interactive Dynamic Island story.
+- `apps/web`: Korean-first responsive product website, plus the waitlist and
+  support serverless endpoints in `apps/web/api` and their schema in
+  `apps/web/supabase/migrations`.
 - `packages/transit-core`: UI-independent Swift domain, matching, progress, and state machine.
 - `services/api`: TypeScript normalization, matching endpoint, provider and APNs boundaries.
 - `fixtures/transit`: explicitly synthetic deterministic data.

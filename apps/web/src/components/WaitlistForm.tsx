@@ -1,34 +1,124 @@
-import { FormEvent, useId, useState } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
+import {
+  RIDER_TYPE_LABELS,
+  submitWaitlist,
+  type RiderType,
+} from "../lib/waitlistClient";
+import type { EmailDelivery } from "../../api/_lib/contract.ts";
 
-const waitlistEmail = "seonjae.k02@gmail.com";
+/**
+ * The production waitlist form.
+ *
+ * Submitting used to build a `mailto:` URL and ask the visitor to send the mail
+ * themselves; nothing was stored. It now posts to `/api/waitlist`, which
+ * persists the registration and sends the confirmation.
+ */
 
-export default function WaitlistForm() {
+type WaitlistState =
+  | { status: "idle" }
+  | { status: "submitting" }
+  | { status: "success"; emailDelivery: EmailDelivery }
+  | { status: "duplicate" }
+  | { status: "error"; message: string };
+
+const GENERIC_ERROR = "지금은 신청을 저장하지 못했어요. 잠시 후 다시 시도해주세요.";
+
+export default function WaitlistForm({ onSupport }: { onSupport: () => void }) {
   const formId = useId();
   const [email, setEmail] = useState("");
-  const [riderType, setRiderType] = useState("제주 도민");
-  const [isPrepared, setIsPrepared] = useState(false);
+  const [riderType, setRiderType] = useState<RiderType>("resident");
+  const [consent, setConsent] = useState(false);
+  const [company, setCompany] = useState("");
+  const [emailError, setEmailError] = useState<string | undefined>(undefined);
+  const [consentError, setConsentError] = useState<string | undefined>(undefined);
+  const [state, setState] = useState<WaitlistState>({ status: "idle" });
 
-  const prepareApplication = (event: FormEvent<HTMLFormElement>) => {
+  // Set once per mount. The server compares it against arrival time, which
+  // costs a real visitor nothing and makes an instant scripted post cheap to
+  // reject.
+  const formRenderedAt = useRef(Date.now()).current;
+  const submitting = state.status === "submitting";
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsPrepared(true);
+    if (submitting) return;
+
+    const trimmed = email.trim();
+    let blocked = false;
+    if (!trimmed || !trimmed.includes("@")) {
+      setEmailError("메일 주소를 다시 확인해주세요.");
+      blocked = true;
+    } else {
+      setEmailError(undefined);
+    }
+    if (!consent) {
+      setConsentError("사전예약을 하려면 동의가 필요해요.");
+      blocked = true;
+    } else {
+      setConsentError(undefined);
+    }
+    if (blocked) return;
+
+    setState({ status: "submitting" });
+    const result = await submitWaitlist({
+      email: trimmed,
+      riderType,
+      privacyConsent: true,
+      formRenderedAt,
+      company,
+    });
+
+    switch (result.status) {
+      case "created":
+        setState({ status: "success", emailDelivery: result.emailDelivery });
+        return;
+      case "already_registered":
+        setState({ status: "duplicate" });
+        return;
+      case "invalid_request":
+        // The typed address stays in the field so it can simply be corrected.
+        if (result.field === "email") setEmailError("메일 주소를 다시 확인해주세요.");
+        if (result.field === "privacyConsent") setConsentError("사전예약을 하려면 동의가 필요해요.");
+        setState({ status: "idle" });
+        return;
+      case "rate_limited":
+        setState({
+          status: "error",
+          message: `요청이 너무 잦아요. ${result.retryAfterSeconds}초 뒤에 다시 시도해주세요.`,
+        });
+        return;
+      default:
+        setState({ status: "error", message: GENERIC_ERROR });
+    }
   };
 
-  const subject = encodeURIComponent("[TAPSO] 사전예약 신청");
-  const body = encodeURIComponent(
-    [
-      "TAPSO 사전예약을 신청합니다.",
-      "",
-      `회신 이메일: ${email}`,
-      `이용 유형: ${riderType}`,
-      "",
-      "입력 내용은 사용자의 메일 앱을 통해서만 전송됩니다.",
-    ].join("\n"),
-  );
+  if (state.status === "success") {
+    return (
+      <div className="waitlist-form-card" data-figma-node-id="9:51">
+        <div className="waitlist-result waitlist-result-success" data-figma-node-id="9:64">
+          <p className="waitlist-result-mark" aria-hidden="true">
+            🍊
+          </p>
+          <strong role="status">첫 탑승 명단에 올라갔어요.</strong>
+          <p>
+            {state.emailDelivery === "sent"
+              ? "확인 메일을 보냈어요. TestFlight가 준비되면 이 주소로 먼저 알려드릴게요."
+              : "신청은 저장됐어요. 확인 메일이 조금 늦을 수 있지만 소식은 이 주소로 꼭 보내드릴게요."}
+          </p>
+          <button type="button" className="figma-support" onClick={onSupport} data-figma-node-id="27:35">
+            후원하기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="waitlist-form-card" data-figma-node-id="9:51">
-      <form onSubmit={prepareApplication} aria-labelledby={`${formId}-title`}>
-        <h3 id={`${formId}-title`} data-figma-node-id="9:52">첫 탑승 소식 받기</h3>
+      <form onSubmit={submit} aria-labelledby={`${formId}-title`} noValidate>
+        <h3 id={`${formId}-title`} data-figma-node-id="9:52">
+          첫 탑승 소식 받기
+        </h3>
 
         <label className="figma-field" htmlFor={`${formId}-email`} data-figma-node-id="9:53">
           <span>이메일</span>
@@ -40,47 +130,120 @@ export default function WaitlistForm() {
             inputMode="email"
             placeholder="hello@example.com"
             required
+            maxLength={254}
+            disabled={submitting}
             value={email}
+            aria-invalid={emailError ? true : undefined}
+            aria-describedby={emailError ? `${formId}-email-error` : undefined}
             onChange={(event) => {
               setEmail(event.target.value);
-              setIsPrepared(false);
+              if (emailError) setEmailError(undefined);
             }}
           />
+          {emailError ? (
+            <span className="field-error" id={`${formId}-email-error`}>
+              <span aria-hidden="true">⚠ </span>
+              {emailError}
+            </span>
+          ) : null}
         </label>
 
-        <label className="figma-field rider-type-field" htmlFor={`${formId}-type`} data-figma-node-id="9:57">
+        <label
+          className="figma-field rider-type-field"
+          htmlFor={`${formId}-type`}
+          data-figma-node-id="9:57"
+        >
           <span>나는</span>
           <select
             id={`${formId}-type`}
             name="riderType"
+            disabled={submitting}
             value={riderType}
-            onChange={(event) => {
-              setRiderType(event.target.value);
-              setIsPrepared(false);
-            }}
+            onChange={(event) => setRiderType(event.target.value as RiderType)}
           >
-            <option>제주 도민</option>
-            <option>제주 여행객</option>
-            <option>제주 버스 애호가</option>
-            <option>그 외 지역에서 응원 중</option>
+            {RIDER_TYPE_LABELS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </label>
 
-        {!isPrepared ? (
-          <button className="figma-submit" type="submit" data-figma-node-id="9:61">
-            신청서 만들기 <span aria-hidden="true">→</span>
+        {/* Honeypot. Hidden from sight and from assistive technology alike. */}
+        <div className="waitlist-honeypot" aria-hidden="true">
+          <label htmlFor={`${formId}-company`}>회사</label>
+          <input
+            id={`${formId}-company`}
+            name="company"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={company}
+            onChange={(event) => setCompany(event.target.value)}
+          />
+        </div>
+
+        <label className="waitlist-consent" htmlFor={`${formId}-consent`}>
+          <input
+            id={`${formId}-consent`}
+            type="checkbox"
+            required
+            disabled={submitting}
+            checked={consent}
+            aria-invalid={consentError ? true : undefined}
+            aria-describedby={consentError ? `${formId}-consent-error` : undefined}
+            onChange={(event) => {
+              setConsent(event.target.checked);
+              if (consentError) setConsentError(undefined);
+            }}
+          />
+          <span>
+            출시 소식을 받기 위해 <strong>이메일과 이용 유형</strong> 수집에 동의합니다.
+            <span className="waitlist-consent-required"> (필수)</span>
+          </span>
+        </label>
+        {consentError ? (
+          <span className="field-error" id={`${formId}-consent-error`}>
+            <span aria-hidden="true">⚠ </span>
+            {consentError}
+          </span>
+        ) : null}
+
+        <div className="cta-row" data-figma-node-id="27:34">
+          <button
+            className="figma-submit"
+            type="submit"
+            disabled={submitting}
+            aria-busy={submitting}
+            data-figma-node-id="9:61"
+          >
+            {submitting ? "보내는 중…" : "사전예약 하기"}
+            {submitting ? null : <span aria-hidden="true">→</span>}
           </button>
-        ) : (
-          <div className="waitlist-success" role="status" aria-live="polite">
-            <strong>신청서가 다 됐수다.</strong>
-            <a href={`mailto:${waitlistEmail}?subject=${subject}&body=${body}`}>
-              메일 앱에서 보내기 <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        )}
+          <button
+            className="figma-support"
+            type="button"
+            onClick={onSupport}
+            data-figma-node-id="27:35"
+          >
+            후원하기
+          </button>
+        </div>
+
+        <div className="waitlist-live" role="status" aria-live="polite">
+          {state.status === "duplicate" ? (
+            <p className="waitlist-result waitlist-result-known">
+              이미 첫 탑승 소식을 신청한 이메일이에요. 준비되면 알려드리쿠다.
+            </p>
+          ) : null}
+          {state.status === "error" ? (
+            <p className="waitlist-result waitlist-result-error">{state.message}</p>
+          ) : null}
+        </div>
 
         <p className="waitlist-privacy" data-figma-node-id="10:68">
-          입력 내용은 사용자의 메일 앱을 통해서만 전송됩니다.
+          출시 소식 안내에만 쓰고 광고는 보내지 않아요. 안내가 끝나거나 요청하시면 지웁니다 — 확인
+          메일에 답장해주세요.
         </p>
       </form>
     </div>
