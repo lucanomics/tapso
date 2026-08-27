@@ -1,0 +1,59 @@
+.support-amount-million {
+  position: relative;
+}
+
+.support-amount-million span {
+  letter-spacing: -0.01em;
+}
+
+.support-million-confirm {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--mist);
+}
+
+.support-million-confirm strong {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 26px;
+}
+
+.support-million-confirm p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+  word-break: keep-all;
+}
+
+.support-million-confirm-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.support-million-confirm-actions .figma-submit,
+.support-million-confirm-actions .figma-support {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 52px;
+  font-size: 13px;
+}
+
+@media (max-width: 520px) {
+  .support-million-confirm-actions {
+    flex-direction: column;
+  }
+
+  .support-million-confirm-actions .figma-submit,
+  .support-million-confirm-actions .figma-support {
+    width: 100%;
+    flex-basis: 52px;
+  }
+}

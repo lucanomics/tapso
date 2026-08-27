@@ -119,7 +119,8 @@ test("GET /api/support/config reports unavailable and withholds any client key",
   assert.equal(body.mode, "unavailable");
   assert.equal(body.clientKey, undefined);
   assert.equal(body.currency, "KRW");
-  assert.deepEqual(body.presetAmounts, [3000, 5000, 10000]);
+  assert.deepEqual(body.presetAmounts, [3000, 5000, 10000, 1000000]);
+  assert.equal(body.maxAmount, 1000000);
 });
 
 test("POST /api/support/config is not allowed", () => {

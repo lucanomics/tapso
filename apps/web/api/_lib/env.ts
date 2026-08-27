@@ -36,7 +36,8 @@ export type TossConfig = {
 
 export type ServerEnv = NodeJS.ProcessEnv | Record<string, string | undefined>;
 
-const DEFAULT_PRESET_AMOUNTS = [3000, 5000, 10000];
+export const MILLION_SUPPORT_AMOUNT = 1_000_000;
+const DEFAULT_PRESET_AMOUNTS = [3000, 5000, 10000, MILLION_SUPPORT_AMOUNT];
 
 function trimmed(env: ServerEnv, key: string): string | undefined {
   const value = env[key];
@@ -106,16 +107,24 @@ export function readTossConfig(env: ServerEnv = process.env): TossConfig | undef
 
 export function readSupportAmountPolicy(env: ServerEnv = process.env): SupportAmountPolicy {
   const raw = trimmed(env, "SUPPORT_PRESET_AMOUNTS");
-  const presets = raw
+  const configuredPresets = raw
     ? raw
         .split(",")
         .map((part) => Number(part.trim()))
         .filter((value) => Number.isSafeInteger(value) && value > 0)
     : [];
+
+  // ₩1,000,000 is a deliberate product easter egg. Keep it available even if
+  // an older deployment still carries the pre-feature preset/max environment.
+  const presetAmounts = Array.from(
+    new Set([...(configuredPresets.length > 0 ? configuredPresets : DEFAULT_PRESET_AMOUNTS), MILLION_SUPPORT_AMOUNT]),
+  ).sort((a, b) => a - b);
+  const configuredMax = positiveInt(env, "SUPPORT_MAX_AMOUNT", MILLION_SUPPORT_AMOUNT);
+
   return {
     currency: "KRW",
-    presetAmounts: presets.length > 0 ? presets : DEFAULT_PRESET_AMOUNTS,
+    presetAmounts,
     minAmount: positiveInt(env, "SUPPORT_MIN_AMOUNT", 1000),
-    maxAmount: positiveInt(env, "SUPPORT_MAX_AMOUNT", 100000),
+    maxAmount: Math.max(configuredMax, MILLION_SUPPORT_AMOUNT),
   };
 }

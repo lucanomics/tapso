@@ -21,10 +21,12 @@ import {
 type DialogState =
   | { status: "loading" }
   | { status: "ready" }
+  | { status: "confirming_million" }
   | { status: "starting" }
   | { status: "error"; message: string };
 
 const CUSTOM = "custom";
+const MILLION_SUPPORT_AMOUNT = 1_000_000;
 
 export default function SupportDialog({ onClose }: { onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -66,11 +68,10 @@ export default function SupportDialog({ onClose }: { onClose: () => void }) {
     amount >= config.minAmount &&
     amount <= config.maxAmount;
 
-  const start = async () => {
-    if (!config || !amountValid || typeof amount !== "number") return;
+  const beginCheckout = async (checkoutAmount: number) => {
     setState({ status: "starting" });
 
-    const intent = await createSupportIntent(amount);
+    const intent = await createSupportIntent(checkoutAmount);
     if (intent.status !== "created") {
       setState({
         status: "error",
@@ -98,6 +99,15 @@ export default function SupportDialog({ onClose }: { onClose: () => void }) {
         message: "결제 창을 열지 못했어요. 결제는 시작되지 않았습니다.",
       });
     }
+  };
+
+  const start = () => {
+    if (!config || !amountValid || typeof amount !== "number") return;
+    if (amount === MILLION_SUPPORT_AMOUNT) {
+      setState({ status: "confirming_million" });
+      return;
+    }
+    void beginCheckout(amount);
   };
 
   return (
@@ -136,10 +146,16 @@ export default function SupportDialog({ onClose }: { onClose: () => void }) {
 
         {config && state.status !== "loading" ? (
           <>
-            <fieldset className="support-amounts" disabled={!live || state.status === "starting"}>
+            <fieldset
+              className="support-amounts"
+              disabled={!live || state.status === "starting" || state.status === "confirming_million"}
+            >
               <legend>후원 금액</legend>
               {config.presetAmounts.map((preset) => (
-                <label className="support-amount" key={preset}>
+                <label
+                  className={`support-amount${preset === MILLION_SUPPORT_AMOUNT ? " support-amount-million" : ""}`}
+                  key={preset}
+                >
                   <input
                     type="radio"
                     name="support-amount"
@@ -147,7 +163,10 @@ export default function SupportDialog({ onClose }: { onClose: () => void }) {
                     checked={selected === preset}
                     onChange={() => setSelected(preset)}
                   />
-                  <span>{formatKrw(preset)}</span>
+                  <span>
+                    {formatKrw(preset)}
+                    {preset === MILLION_SUPPORT_AMOUNT ? " 😳" : ""}
+                  </span>
                 </label>
               ))}
               <label className="support-amount">
@@ -170,7 +189,7 @@ export default function SupportDialog({ onClose }: { onClose: () => void }) {
                   type="text"
                   inputMode="numeric"
                   autoComplete="off"
-                  disabled={!live}
+                  disabled={!live || state.status === "confirming_million"}
                   placeholder={String(config.minAmount)}
                   value={customAmount}
                   onChange={(event) => setCustomAmount(event.target.value)}
@@ -184,23 +203,47 @@ export default function SupportDialog({ onClose }: { onClose: () => void }) {
           </>
         ) : null}
 
+        {state.status === "confirming_million" ? (
+          <section className="support-million-confirm" aria-labelledby={`${titleId}-million-confirm`}>
+            <strong id={`${titleId}-million-confirm`}>진짜 100만원 맞나요? 😳</strong>
+            <p>
+              장난 버튼이긴 하지만 결제는 장난이 아니에요. 계속하면 실제 {formatKrw(MILLION_SUPPORT_AMOUNT)}
+              결제 창이 열립니다.
+            </p>
+            <div className="support-million-confirm-actions">
+              <button type="button" className="figma-support" onClick={() => setState({ status: "ready" })}>
+                아니요, 돌아갈래요
+              </button>
+              <button
+                type="button"
+                className="figma-submit"
+                onClick={() => void beginCheckout(MILLION_SUPPORT_AMOUNT)}
+              >
+                네, 100만원 후원
+              </button>
+            </div>
+          </section>
+        ) : null}
+
         {state.status === "error" ? (
           <p className="support-dialog-error" role="alert">
             {state.message}
           </p>
         ) : null}
 
-        <div className="support-dialog-actions">
-          <button
-            type="button"
-            className="figma-submit support-dialog-submit"
-            disabled={!live || !amountValid || state.status !== "ready"}
-            aria-describedby={live ? undefined : `${titleId}-blocked`}
-            onClick={() => void start()}
-          >
-            {state.status === "starting" ? "결제 창 여는 중…" : "후원 계속하기"}
-          </button>
-        </div>
+        {state.status !== "confirming_million" ? (
+          <div className="support-dialog-actions">
+            <button
+              type="button"
+              className="figma-submit support-dialog-submit"
+              disabled={!live || !amountValid || state.status !== "ready"}
+              aria-describedby={live ? undefined : `${titleId}-blocked`}
+              onClick={start}
+            >
+              {state.status === "starting" ? "결제 창 여는 중…" : "후원 계속하기"}
+            </button>
+          </div>
+        ) : null}
 
         {/*
           The Figma Button component requires a disabled state to explain its
