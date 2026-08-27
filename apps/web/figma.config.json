@@ -1,0 +1,10 @@
+{
+  "codeConnect": {
+    "include": ["src/**/*.figma.ts"],
+    "exclude": ["test/**", "dist/**", "node_modules/**"],
+    "label": "React",
+    "language": "tsx",
+    "interactiveSetupFigmaFileUrl": "https://www.figma.com/design/kkx04GvqOzHje7Dw5ikO9X/TAPSO-Product-Marketing-Design-System",
+    "defaultBranch": "main"
+  }
+}
